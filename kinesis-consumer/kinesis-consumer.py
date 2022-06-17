@@ -9,7 +9,7 @@ client = session.client(
     'kinesis',
     aws_access_key_id='',
     aws_secret_access_key='',
-    endpoint_url='http://kinesis:4567'
+    endpoint_url='http://host.docker.internal:4567'
 )
 
 list_streams = client.list_streams()
