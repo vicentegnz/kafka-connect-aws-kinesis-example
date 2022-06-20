@@ -5,8 +5,8 @@ COPY connect-standalone.properties /opt/kafka/config/
 COPY connect-kinesis-sink.properties /opt/kafka/config/
 
 # kinesis connector binaries
-COPY amazon-kinesis-kafka-connector-0.0.9.jar /libs/
-ENV CLASSPATH=/libs/amazon-kinesis-kafka-connector-0.0.9.jar:${CLASSPATH}
+COPY amazon-kinesis-kafka-connector-0.0.9-DEMO-CUSTOM.jar /libs/
+ENV CLASSPATH=/libs/amazon-kinesis-kafka-connector-0.0.9-DEMO-CUSTOM.jar:${CLASSPATH}
 
 ARG ACCESS_KEY_ID
 ARG SECRET_ACCESS_KEY

@@ -84,7 +84,6 @@ services:
     container_name: kinesis
     environment:
       EDGE_PORT: 4566
-      KINESIS_PROVIDER: kinesalite
       SERVICES: kinesis
       AWS_DEFAULT_REGION: eu-west-1
       AWS_ACCESS_KEY_ID: FakeKey
@@ -104,7 +103,6 @@ services:
       args:
         ACCESS_KEY_ID: FakeKey
         SECRET_ACCESS_KEY: FakeKey
-        SESSION_TOKEN: FakeKey
     container_name: connect-output
     ports:
       - "8084:8083"
