@@ -6,4 +6,4 @@ WORKDIR /code
 
 RUN pip install -r requeriments.txt
 
-CMD ["python", "kinesis-consumer.py"]
+CMD ["python", "-u", "kinesis-consumer.py"]

@@ -26,16 +26,13 @@ services:
       ## or to register in your `/etc/hosts` kafka as your loopback interface
       ## address together with hostname and 127.0.0.1
       KAFKA_ADVERTISED_LISTENERS: >-
-        LISTENER_DOCKER_INTERNAL://kafka:19092,
-        LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-kafka}:9092
+        LISTENER_DOCKER_INTERNAL://kafka:19092, LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-kafka}:9092
 
       KAFKA_LISTENERS: >-
-        LISTENER_DOCKER_INTERNAL://:19092,
-        LISTENER_DOCKER_EXTERNAL://:9092
+        LISTENER_DOCKER_INTERNAL://:19092, LISTENER_DOCKER_EXTERNAL://:9092
 
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: >-
-        LISTENER_DOCKER_INTERNAL:PLAINTEXT,
-        LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+        LISTENER_DOCKER_INTERNAL:PLAINTEXT, LISTENER_DOCKER_EXTERNAL:PLAINTEXT
 
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -43,9 +40,7 @@ services:
       # we create topic with 1 partition and 1 replica as it's for local dev and we're running a single broker instance.
       KAFKA_CREATE_TOPICS: 'simple-connect:3:1'
       KAFKA_LOG4J_LOGGERS: >-
-        kafka.controller=INFO,
-        kafka.producer.async.DefaultEventHandler=INFO,
-        state.change.logger=INFO
+        kafka.controller=INFO, kafka.producer.async.DefaultEventHandler=INFO, state.change.logger=INFO
     ports:
       - 9092:9092
     depends_on:
@@ -55,19 +50,21 @@ services:
     networks:
       - custom-network
 
-  connect-input:
-    build:
-      context: ./input
-      dockerfile: Dockerfile
-    container_name: connect-input
-    ports:
-      - 8083:8083
+  kafka-rest-proxy:
+    image: confluentinc/cp-kafka-rest:7.0.3
+    container_name: kafka-rest-proxy
+    restart: always
     depends_on:
       - kafka
-    volumes:
-      - ./input/connect-input-file:/tmp
+    ports:
+      - "5324:8086"
+    environment:
+      KAFKA_REST_HOST_NAME: kafka-rest-proxy
+      KAFKA_REST_LISTENERS: http://0.0.0.0:8086
+      KAFKA_REST_BOOTSTRAP_SERVERS: kafka:19092
     networks:
       - custom-network
+
   kafka-ui:
     image: provectuslabs/kafka-ui:v0.4.0
     container_name: kafka-ui
@@ -82,30 +79,40 @@ services:
     networks:
       - custom-network
 
+  kinesis:
+    image: "localstack/localstack:latest"
+    container_name: kinesis
+    environment:
+      EDGE_PORT: 4566
+      KINESIS_PROVIDER: kinesalite
+      SERVICES: kinesis
+      AWS_DEFAULT_REGION: eu-west-1
+      AWS_ACCESS_KEY_ID: FakeKey
+      AWS_SECRET_ACCESS_KEY: FakeKey
+      KINESIS_INITIALIZE_STREAMS: simple-connect-stream:1
+    ports:
+      - '4566-4583:4566-4583'
+    depends_on:
+      - kafka
+    networks:
+      - custom-network
+
   connect-output:
     build:
       context: ./output
       dockerfile: Dockerfile
+      args:
+        ACCESS_KEY_ID: FakeKey
+        SECRET_ACCESS_KEY: FakeKey
+        SESSION_TOKEN: FakeKey
     container_name: connect-output
     ports:
       - "8084:8083"
     depends_on:
       - kafka
-      - connect-input
     networks:
       - custom-network
 
-  kinesis:
-    image: saidsef/aws-kinesis-local:latest
-    container_name: kinesis
-    ports:
-      - 4567:4567
-    depends_on:
-      - kafka
-      - connect-output
-    networks:
-      - custom-network
-     
   kinesis-consumer:
     build:
       context: ./kinesis-consumer
@@ -114,7 +121,7 @@ services:
     depends_on:
       - kinesis
     networks:
-    - custom-network
+      - custom-network
 
 networks:
   custom-network:

@@ -8,9 +8,11 @@ COPY connect-kinesis-sink.properties /opt/kafka/config/
 COPY amazon-kinesis-kafka-connector-0.0.9.jar /libs/
 ENV CLASSPATH=/libs/amazon-kinesis-kafka-connector-0.0.9.jar:${CLASSPATH}
 
-RUN mkdir -p ~/.aws/
-RUN echo "[default]\naws_access_key_id = \naws_secret_access_key = " > ~/.aws/credentials
-RUN echo "[default]\nregion = eu-west-1\noutput = json" > ~/.aws/config
+ARG ACCESS_KEY_ID
+ARG SECRET_ACCESS_KEY
+
+ENV AWS_ACCESS_KEY_ID=${ACCESS_KEY_ID}
+ENV AWS_SECRET_ACCESS_KEY=${SECRET_ACCESS_KEY}
 
 # we replace the start command creating a connector instead.
 COPY start-kafka.sh /usr/bin/
