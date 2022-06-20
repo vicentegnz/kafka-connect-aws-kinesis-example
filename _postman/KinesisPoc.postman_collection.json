@@ -427,7 +427,53 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							""
+							"const randomString = (length, characters) => {",
+							"    let result = \"\";",
+							"    const charactersLength = characters.length;",
+							"    for (let i = 0; i < length; i++) {",
+							"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+							"    }",
+							"    return result;",
+							"};",
+							"",
+							"const makeKsuid = () => randomString(27, \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\");",
+							"",
+							"const makeTraceparent = () => {",
+							"    const characters = \"abcdef0123456789\";",
+							"    const traceId = randomString(32, characters);",
+							"    const parentId = randomString(16, characters);",
+							"    const sampled = \"01\";",
+							"    return `00-${traceId}-${parentId}-${sampled}`;",
+							"};",
+							"",
+							"const replaceCustomDynamicVariablesIn = (body) => {",
+							"    const customDynamicVariables = new Map([",
+							"        [\"{{$aggregateId}}\", makeKsuid],",
+							"        [\"{{$entityId}}\", makeKsuid],",
+							"        [\"{{$eventId}}\", makeKsuid],",
+							"        [\"{{$traceparent}}\", makeTraceparent],",
+							"    ]);",
+							"",
+							"    let result = body;",
+							"    customDynamicVariables.forEach((func, key) => {",
+							"        if (result.includes(key)) {",
+							"            result = result.replaceAll(key, func());",
+							"        }",
+							"    });",
+							"",
+							"    return result;",
+							"};",
+							"",
+							"const rawBody = pm.request.body.raw ?? \"\";",
+							"",
+							"const modifiedBody = replaceCustomDynamicVariablesIn(rawBody);",
+							"",
+							"const body = JSON.parse(pm.variables.replaceIn(modifiedBody));",
+							"if (body.headers) {",
+							"    body.headers.forEach(header => header.value = btoa(header.value));",
+							"}",
+							"",
+							"pm.request.body.raw = JSON.stringify(body);"
 						]
 					}
 				},
@@ -444,11 +490,76 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Connector",
+			"item": [
+				{
+					"name": "Get connector configuration",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8084/connectors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8084",
+							"path": [
+								"connectors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Configure connector",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"name\": \"kinesis-sink-connector\",\r\n    \"config\": {\r\n        \"connector.class\": \"com.amazon.kinesis.kafka.AmazonKinesisSinkConnector\",\r\n        \"tasks.max\": \"1\",\r\n        \"topics\": \"simple-connect\",\r\n        \"region\": \"eu-west-1\",\r\n        \"streamName\": \"simple-connect-stream\",\r\n        \"usePartitionAsHashKey\": \"false\",\r\n        \"flushSync\": \"true\",\r\n        \"singleKinesisProducerPerPartition\": \"true\",\r\n        \"pauseConsumption\": \"true\",\r\n        \"outstandingRecordsThreshold\": \"500000\",\r\n        \"sleepPeriod\": \"1000\",\r\n        \"sleepCycles\": \"10\",\r\n        \"maxBufferedTime\": \"1500\",\r\n        \"maxConnections\": \"1\",\r\n        \"rateLimit\": \"100\",\r\n        \"ttl\": \"60000\",\r\n        \"metricsLevel\": \"detailed\",\r\n        \"metricsGranuality\": \"shard\",\r\n        \"metricsNameSpace\": \"KafkaKinesisStreamsConnector\",\r\n        \"aggregation\": \"true\",\r\n        \"kinesisEndpoint\": \"d7fa-77-228-164-92.ngrok.io\",\r\n        \"awsValidateCertificate\": \"false\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8084/connectors/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8084",
+							"path": [
+								"connectors",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [
 		{
 			"key": "clusterId",
+			"value": ""
+		},
+		{
+			"key": "paymentId",
+			"value": ""
+		},
+		{
+			"key": "originatorId",
+			"value": ""
+		},
+		{
+			"key": "refundId",
 			"value": ""
 		}
 	]
