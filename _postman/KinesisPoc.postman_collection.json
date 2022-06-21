@@ -1,0 +1,566 @@
+{
+	"info": {
+		"_postman_id": "31c9ef04-acf0-4d25-b5f4-c53e86514a0a",
+		"name": "KinesisPoc",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6789248"
+	},
+	"item": [
+		{
+			"name": "Get Cluster",
+			"item": [
+				{
+					"name": "Get first cluster",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseBody !== \"\") {\r",
+									"    const jsonData = JSON.parse(responseBody);\r",
+									"    if (jsonData.data && jsonData.data[0] && jsonData.data[0].cluster_id) {\r",
+									"        pm.collectionVariables.set(\"clusterId\", jsonData.data[0].cluster_id);\r",
+									"    }\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters",
+							"host": [
+								"{{KafkaRestProxyHost}}"
+							],
+							"path": [
+								"v3",
+								"clusters"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Gateway",
+			"item": [
+				{
+					"name": "Payment pending",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const body = JSON.parse(pm.request.body.raw ?? \"\");\r",
+									"if (body.value.data.payload.id) {\r",
+									"    pm.collectionVariables.set(\"paymentId\", body.value.data.payload.id);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.kafka.json.v2+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{$aggregateId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"peza.gateway.v1beta1.event.payment.pending\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"peza.gateway.v1beta1.event.payment.pending\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceIndex\": 0,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{$aggregateId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Webhooks_Local_Test_Merchant\",\r\n                \"status\": \"pending\",\r\n                \"reason\":{\r\n                    \"code\": \"waiting_confirmation\",\r\n                    \"description\": \"Payment confirmation is pending for this non instant payment.\"\r\n                    },\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"paymentMethod\": \"fpx\",\r\n                \"configuration\": {\r\n                    \"integrationId\": \"Razer\",\r\n                    \"integrationConfig\": {\r\n                        \"user\": \"razer\",\r\n                        \"password\": \"***\"\r\n                    },\r\n                    \"id\": \"{{$guid}}\"\r\n                },\r\n                \"captureOption\": \"auto\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"description\": \"{{$randomBsNoun}}\",\r\n                \"returnUrl\": \"{{$randomUrl}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/simple-connect/records",
+							"host": [
+								"{{KafkaRestProxyHost}}"
+							],
+							"path": [
+								"v3",
+								"clusters",
+								"{{clusterId}}",
+								"topics",
+								"simple-connect",
+								"records"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payment finished",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.kafka.json.v2+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"peza.gateway.v1beta1.event.payment.finished\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"peza.gateway.v1beta1.event.payment.finished\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceIndex\": 1,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Webhooks_Local_Test_Merchant\",\r\n                \"status\": \"succeeded\",\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"paymentMethod\": \"fpx\",\r\n                \"configuration\": {\r\n                    \"integrationId\": \"Razer\",\r\n                    \"integrationConfig\": {\r\n                        \"user\": \"razer\",\r\n                        \"password\": \"***\"\r\n                    },\r\n                    \"id\": \"{{$guid}}\"\r\n                },\r\n                \"captureOption\": \"auto\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"description\": \"{{$randomBsNoun}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/simple-connect/records",
+							"host": [
+								"{{KafkaRestProxyHost}}"
+							],
+							"path": [
+								"v3",
+								"clusters",
+								"{{clusterId}}",
+								"topics",
+								"simple-connect",
+								"records"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel finished",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.kafka.json.v2+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"peza.gateway.v1beta1.event.payment.cancel_finished\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"peza.gateway.v1beta1.event.payment.cancel_finished\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceNumber\": 2,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{$entityId}}\",\r\n                \"paymentId\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Webhooks_Local_Test_Merchant\",\r\n                \"status\": \"succeeded\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/simple-connect/records",
+							"host": [
+								"{{KafkaRestProxyHost}}"
+							],
+							"path": [
+								"v3",
+								"clusters",
+								"{{clusterId}}",
+								"topics",
+								"simple-connect",
+								"records"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Capture finished",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.kafka.json.v2+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"peza.gateway.v1beta1.event.payment.capture_finished\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"peza.gateway.v1beta1.event.payment.capture_finished\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceNumber\": 2,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{$entityId}}\",\r\n                \"paymentId\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Webhooks_Local_Test_Merchant\",\r\n                \"status\": \"succeded\",\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/simple-connect/records",
+							"host": [
+								"{{KafkaRestProxyHost}}"
+							],
+							"path": [
+								"v3",
+								"clusters",
+								"{{clusterId}}",
+								"topics",
+								"simple-connect",
+								"records"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refund pending",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const body = JSON.parse(pm.request.body.raw ?? \"\");\r",
+									"if (body.value.data.payload.id) {\r",
+									"    pm.collectionVariables.set(\"refundId\", body.value.data.payload.id);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.kafka.json.v2+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"peza.gateway.v1beta1.event.payment.refund_pending\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"peza.gateway.v1beta1.event.payment.refund_pending\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceNumber\": 2,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{$entityId}}\",\r\n                \"paymentId\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Webhooks_Local_Test_Merchant\",\r\n                \"status\": \"pending\",\r\n                \"reason\":{\r\n                    \"code\": \"waiting_confirmation\",\r\n                    \"description\": \"Payment confirmation is pending for this non instant payment.\"\r\n                },\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/simple-connect/records",
+							"host": [
+								"{{KafkaRestProxyHost}}"
+							],
+							"path": [
+								"v3",
+								"clusters",
+								"{{clusterId}}",
+								"topics",
+								"simple-connect",
+								"records"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refund finished",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.kafka.json.v2+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"peza.gateway.v1beta1.event.payment.refund_finished\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"peza.gateway.v1beta1.event.payment.refund_finished\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceNumber\": 3,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{refundId}}\",\r\n                \"paymentId\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Webhooks_Local_Test_Merchant\",\r\n                \"status\": \"succeeded\",\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/simple-connect/records",
+							"host": [
+								"{{KafkaRestProxyHost}}"
+							],
+							"path": [
+								"v3",
+								"clusters",
+								"{{clusterId}}",
+								"topics",
+								"simple-connect",
+								"records"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const randomString = (length, characters) => {",
+							"    let result = \"\";",
+							"    const charactersLength = characters.length;",
+							"    for (let i = 0; i < length; i++) {",
+							"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+							"    }",
+							"    return result;",
+							"};",
+							"",
+							"const makeKsuid = () => randomString(27, \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\");",
+							"",
+							"const makeTraceparent = () => {",
+							"    const characters = \"abcdef0123456789\";",
+							"    const traceId = randomString(32, characters);",
+							"    const parentId = randomString(16, characters);",
+							"    const sampled = \"01\";",
+							"    return `00-${traceId}-${parentId}-${sampled}`;",
+							"};",
+							"",
+							"const replaceCustomDynamicVariablesIn = (body) => {",
+							"    const customDynamicVariables = new Map([",
+							"        [\"{{$aggregateId}}\", makeKsuid],",
+							"        [\"{{$entityId}}\", makeKsuid],",
+							"        [\"{{$eventId}}\", makeKsuid],",
+							"        [\"{{$traceparent}}\", makeTraceparent],",
+							"    ]);",
+							"",
+							"    let result = body;",
+							"    customDynamicVariables.forEach((func, key) => {",
+							"        if (result.includes(key)) {",
+							"            result = result.replaceAll(key, func());",
+							"        }",
+							"    });",
+							"",
+							"    return result;",
+							"};",
+							"",
+							"const rawBody = pm.request.body.raw ?? \"\";",
+							"",
+							"const modifiedBody = replaceCustomDynamicVariablesIn(rawBody);",
+							"",
+							"const body = JSON.parse(pm.variables.replaceIn(modifiedBody));",
+							"if (body.headers) {",
+							"    body.headers.forEach(header => header.value = btoa(header.value));",
+							"}",
+							"",
+							"pm.request.body.raw = JSON.stringify(body);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const body = JSON.parse(pm.request.body.raw ?? \"\");",
+							"if (body.value.data.payload.id) {",
+							"    pm.collectionVariables.set(\"originatorId\", body.value.data.payload.id);",
+							"}"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Connector",
+			"item": [
+				{
+					"name": "Get connector configuration",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8084/connectors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8084",
+							"path": [
+								"connectors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Configure connector",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"name\": \"kinesis-sink-connector\",\r\n    \"config\": {\r\n        \"connector.class\": \"com.amazon.kinesis.kafka.AmazonKinesisSinkConnector\",\r\n        \"tasks.max\": \"1\",\r\n        \"topics\": \"simple-connect\",\r\n        \"region\": \"eu-west-1\",\r\n        \"streamName\": \"simple-connect-stream\",\r\n        \"usePartitionAsHashKey\": \"false\",\r\n        \"flushSync\": \"true\",\r\n        \"singleKinesisProducerPerPartition\": \"true\",\r\n        \"pauseConsumption\": \"true\",\r\n        \"outstandingRecordsThreshold\": \"500000\",\r\n        \"sleepPeriod\": \"1000\",\r\n        \"sleepCycles\": \"10\",\r\n        \"maxBufferedTime\": \"1500\",\r\n        \"maxConnections\": \"1\",\r\n        \"rateLimit\": \"100\",\r\n        \"ttl\": \"60000\",\r\n        \"metricsLevel\": \"detailed\",\r\n        \"metricsGranuality\": \"shard\",\r\n        \"metricsNameSpace\": \"KafkaKinesisStreamsConnector\",\r\n        \"aggregation\": \"true\",\r\n        \"kinesisEndpoint\": \"d7fa-77-228-164-92.ngrok.io\",\r\n        \"awsValidateCertificate\": \"false\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8084/connectors/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8084",
+							"path": [
+								"connectors",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "clusterId",
+			"value": ""
+		},
+		{
+			"key": "paymentId",
+			"value": ""
+		},
+		{
+			"key": "originatorId",
+			"value": ""
+		},
+		{
+			"key": "refundId",
+			"value": ""
+		}
+	]
+}
