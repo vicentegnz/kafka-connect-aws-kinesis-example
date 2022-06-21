@@ -98,14 +98,16 @@ services:
 
   connect-output:
     build:
-      context: ./output
+      context: ./distributed-connector
       dockerfile: Dockerfile
       args:
         ACCESS_KEY_ID: FakeKey
         SECRET_ACCESS_KEY: FakeKey
         SESSION_TOKEN: FakeKey
+    deploy:
+      replicas: 3
     ports:
-      - "8084:8083"
+      - "8083"
     depends_on:
       - kafka
     networks:
