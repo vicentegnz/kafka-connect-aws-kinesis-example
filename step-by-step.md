@@ -1,4 +1,6 @@
-# Quick step by step
+# Quick step by step (TBD)
+
+TBD - NGROK STEP
 
 - Build the docker images as the connect image is required to build to include
 connector standalone configurations, we could have used a map to provide the

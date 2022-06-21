@@ -11,11 +11,6 @@ client = session.client(
     endpoint_url='http://kinesis:4566'
 )
 
-list_streams = client.list_streams()
-if 'simple-connect-stream' not in list_streams['StreamNames']:
-    client.create_stream(StreamName='simple-connect-stream', ShardCount=1)
-    time.sleep(1)
-
 stream_details = client.describe_stream(StreamName='simple-connect-stream')
 shard_id = stream_details['StreamDescription']['Shards'][0]['ShardId']
 
