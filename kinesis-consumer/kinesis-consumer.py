@@ -22,6 +22,7 @@ response = client.get_shard_iterator(
 
 shard_iterator = response['ShardIterator']
 
+
 print("Listening stream data.")
 while True:
     response = client.get_records(ShardIterator=shard_iterator, Limit=5)
