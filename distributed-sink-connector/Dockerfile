@@ -3,7 +3,6 @@ FROM wurstmeister/kafka:2.13-2.8.1
 # we replace the default connect-standalone.properties so we can properly resolve to our local kafka docker development
 
 COPY connect-distributed.properties /opt/kafka/config/
-COPY connect-kinesis-sink.properties /opt/kafka/config/
 
 # kinesis connector binaries
 COPY amazon-kinesis-kafka-connector-0.0.9-DEMO-CUSTOM.jar /libs/
