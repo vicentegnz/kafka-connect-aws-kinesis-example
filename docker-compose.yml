@@ -3,48 +3,61 @@ version: '3.3'
 services:
   zookeeper:
     container_name: zookeeper
-    image: wurstmeister/zookeeper:latest
+    image: bitnami/kafka:3.1.0-debian-10-r89
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+      ALLOW_ANONYMOUS_LOGIN: "yes"
     ports:
       - '2181:2181'
     networks:
       - custom-network
 
   kafka:
-    container_name: kafka
-    image: wurstmeister/kafka:2.13-2.8.1
-    environment:
-      ## the >- used below infers a value which is a string and properly
-      ## ignore the multiple lines resulting in one long string:
-      ## https://yaml.org/spec/1.2/spec.html  
-
-      ## You need to make sure to specify your hostname in a file in this
-      ## same dir as this compose file called `.env`(uncomment the line)
-      ## or to register in your `/etc/hosts` kafka as your loopback interface
-      ## address together with hostname and 127.0.0.1
-      KAFKA_ADVERTISED_LISTENERS: >-
-        LISTENER_DOCKER_INTERNAL://kafka:19092, LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-kafka}:9092
-
-      KAFKA_LISTENERS: >-
-        LISTENER_DOCKER_INTERNAL://:19092, LISTENER_DOCKER_EXTERNAL://:9092
-
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: >-
-        LISTENER_DOCKER_INTERNAL:PLAINTEXT, LISTENER_DOCKER_EXTERNAL:PLAINTEXT
-
-      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      # we create topic with 1 partition and 1 replica as it's for local dev and we're running a single broker instance.
-      KAFKA_CREATE_TOPICS: 'simple-connect:3:1'
-      KAFKA_LOG4J_LOGGERS: >-
-        kafka.controller=INFO, kafka.producer.async.DefaultEventHandler=INFO, state.change.logger=INFO
+    image: 'bitnami/kafka:3.1.0-debian-10-r89'
     ports:
-      - 9092:9092
-    depends_on:
-      - zookeeper
+      - "5221:9092"
+      - "5222:9093"
+      - "5224:9094"
+    environment:
+      - BITNAMI_DEBUG=true
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_KRAFT_CLUSTER_ID=50VGJ_HYQiq3H2dD81JGTA
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@127.0.0.1:9093
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - custom-network
+  
+  kafka-init:
+    image: 'bitnami/kafka:3.1.0-debian-10-r89'
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics.sh --bootstrap-server $$SERVER --list
+      echo 'Creating kafka topics'
+      kafka-topics.sh --bootstrap-server $$SERVER --create --if-not-exists --topic $$TOPIC --replication-factor 1 --partitions 3
+      echo 'Successfully created the following topics:'
+      kafka-topics.sh --bootstrap-server $$SERVER --list
+      "
+    environment:
+      SERVER: 'kafka:9092'
+      TOPIC: 'simple-connect'
     networks:
       - custom-network
 
@@ -86,7 +99,7 @@ services:
       AWS_DEFAULT_REGION: eu-west-1
       AWS_ACCESS_KEY_ID: FakeKey
       AWS_SECRET_ACCESS_KEY: FakeKey
-      KINESIS_INITIALIZE_STREAMS: simple-connect-stream:1
+      KINESIS_INITIALIZE_STREAMS: simple-sink-connect-stream:1,simple-source-connect-stream:1
     ports:
       - '4566-4583:4566-4583'
     depends_on:
@@ -94,18 +107,33 @@ services:
     networks:
       - custom-network
 
-  connect-output:
+  source-kinesis-connector:
     build:
-      context: ./distributed-sink-connector
-      dockerfile: Dockerfile
-      args:
-        ACCESS_KEY_ID: FakeKey
-        SECRET_ACCESS_KEY: FakeKey
-        SESSION_TOKEN: FakeKey
+      context: .
+      dockerfile: distributed-source-connector/Dockerfile
     deploy:
       replicas: 3
     ports:
       - "8083"
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+    depends_on:
+      - kafka
+    networks:
+      - custom-network
+
+  sink-kinesis-connector:
+    build:
+      context: .
+      dockerfile: distributed-sink-connector/Dockerfile
+    deploy:
+      replicas: 3
+    ports:
+      - "8083"
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
     depends_on:
       - kafka
     networks:
