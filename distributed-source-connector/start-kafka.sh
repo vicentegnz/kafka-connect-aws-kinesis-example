@@ -1,4 +1,4 @@
 #!/bin/bash -e
 
 # connector start command here.
-exec "/opt/kafka/bin/connect-distributed.sh" "/opt/kafka/config/connect-distributed.properties"
+exec "/opt/bitnami/kafka/bin/connect-distributed.sh" "/opt/bitnami/kafka/config/connect-distributed.properties"
