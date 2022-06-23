@@ -100,7 +100,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/simple-connect/records",
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/peza.gateway.v1beta1.event.payment/records",
 							"host": [
 								"{{KafkaRestProxyHost}}"
 							],
@@ -109,7 +109,7 @@
 								"clusters",
 								"{{clusterId}}",
 								"topics",
-								"simple-connect",
+								"peza.gateway.v1beta1.event.payment",
 								"records"
 							]
 						}
@@ -160,7 +160,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/simple-connect/records",
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/peza.gateway.v1beta1.event.payment/records",
 							"host": [
 								"{{KafkaRestProxyHost}}"
 							],
@@ -169,7 +169,7 @@
 								"clusters",
 								"{{clusterId}}",
 								"topics",
-								"simple-connect",
+								"peza.gateway.v1beta1.event.payment",
 								"records"
 							]
 						}
@@ -220,7 +220,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/simple-connect/records",
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/peza.gateway.v1beta1.event.payment/records",
 							"host": [
 								"{{KafkaRestProxyHost}}"
 							],
@@ -229,7 +229,7 @@
 								"clusters",
 								"{{clusterId}}",
 								"topics",
-								"simple-connect",
+								"peza.gateway.v1beta1.event.payment",
 								"records"
 							]
 						}
@@ -280,7 +280,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/simple-connect/records",
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/peza.gateway.v1beta1.event.payment/records",
 							"host": [
 								"{{KafkaRestProxyHost}}"
 							],
@@ -289,7 +289,7 @@
 								"clusters",
 								"{{clusterId}}",
 								"topics",
-								"simple-connect",
+								"peza.gateway.v1beta1.event.payment",
 								"records"
 							]
 						}
@@ -344,7 +344,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/simple-connect/records",
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/peza.gateway.v1beta1.event.payment/records",
 							"host": [
 								"{{KafkaRestProxyHost}}"
 							],
@@ -353,7 +353,7 @@
 								"clusters",
 								"{{clusterId}}",
 								"topics",
-								"simple-connect",
+								"peza.gateway.v1beta1.event.payment",
 								"records"
 							]
 						}
@@ -404,7 +404,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/simple-connect/records",
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/peza.gateway.v1beta1.event.payment/records",
 							"host": [
 								"{{KafkaRestProxyHost}}"
 							],
@@ -413,7 +413,7 @@
 								"clusters",
 								"{{clusterId}}",
 								"topics",
-								"simple-connect",
+								"peza.gateway.v1beta1.event.payment",
 								"records"
 							]
 						}
@@ -504,7 +504,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{ \r\n    \"name\": \"kinesis-sink-connector\",\r\n    \"config\": {\r\n        \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSinkConnector\",\r\n        \"tasks.max\": \"1\",\r\n        \"topics\": \"simple-connect\",\r\n        \"camel.error.handler\": \"default\",\r\n        \"camel.error.handler.max.redeliveries\": \"10\",\r\n        \"camel.sink.path.streamName\": \"simple-sink-connect-stream\",\r\n        \"camel.sink.endpoint.overrideEndpoint\": \"true\",\r\n        \"camel.sink.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n        \"camel.sink.endpoint.accessKey\": \"FakeKey\",\r\n        \"camel.sink.endpoint.secretKey\": \"FakeKey\",\r\n        \"camel.sink.endpoint.region\": \"eu-west-1\",\r\n        \"camel.sink.endpoint.trustAllCertificates\": \"true\",\r\n        \"camel.sink.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n    }\r\n}",
+									"raw": "{ \r\n    \"name\": \"kinesis-sink-connector\",\r\n    \"config\": {\r\n        \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSinkConnector\",\r\n        \"tasks.max\": \"3\",\r\n        \"topics\": \"peza.gateway.v1beta1.event.payment\",\r\n        \"camel.error.handler\": \"default\",\r\n        \"camel.error.handler.max.redeliveries\": \"10\",\r\n        \"camel.sink.path.streamName\": \"simple-sink-connect-stream\",\r\n        \"camel.sink.endpoint.overrideEndpoint\": \"true\",\r\n        \"camel.sink.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n        \"camel.sink.endpoint.accessKey\": \"FakeKey\",\r\n        \"camel.sink.endpoint.secretKey\": \"FakeKey\",\r\n        \"camel.sink.endpoint.region\": \"eu-west-1\",\r\n        \"camel.sink.endpoint.trustAllCertificates\": \"true\",\r\n        \"camel.sink.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -533,7 +533,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSinkConnector\",\r\n    \"tasks.max\": \"1\",\r\n    \"topics\": \"simple-connect\",\r\n    \"camel.error.handler\": \"default\",\r\n    \"camel.error.handler.max.redeliveries\": \"10\",\r\n    \"camel.sink.path.streamName\": \"simple-sink-connect-stream\",\r\n    \"camel.sink.endpoint.overrideEndpoint\": \"true\",\r\n    \"camel.sink.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n    \"camel.sink.endpoint.accessKey\": \"FakeKey\",\r\n    \"camel.sink.endpoint.secretKey\": \"FakeKey\",\r\n    \"camel.sink.endpoint.region\": \"eu-west-1\",\r\n    \"camel.sink.endpoint.trustAllCertificates\": \"true\",\r\n    \"camel.sink.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n}",
+									"raw": "{\r\n    \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSinkConnector\",\r\n    \"tasks.max\": \"3\",\r\n    \"topics\": \"peza.gateway.v1beta1.event.payment\",\r\n    \"camel.error.handler\": \"default\",\r\n    \"camel.error.handler.max.redeliveries\": \"10\",\r\n    \"camel.sink.path.streamName\": \"simple-sink-connect-stream\",\r\n    \"camel.sink.endpoint.overrideEndpoint\": \"true\",\r\n    \"camel.sink.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n    \"camel.sink.endpoint.accessKey\": \"FakeKey\",\r\n    \"camel.sink.endpoint.secretKey\": \"FakeKey\",\r\n    \"camel.sink.endpoint.region\": \"eu-west-1\",\r\n    \"camel.sink.endpoint.trustAllCertificates\": \"true\",\r\n    \"camel.sink.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -588,7 +588,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{ \r\n    \"name\": \"kinesis-source-connector\",\r\n    \"config\": {\r\n        \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSourceConnector\",\r\n        \"tasks.max\": \"1\",\r\n        \"topics\": \"simple-connect\",\r\n        \"camel.error.handler\": \"default\",\r\n        \"camel.error.handler.max.redeliveries\": \"10\",\r\n        \"camel.source.path.streamName\": \"simple-source-connect-stream\",\r\n        \"camel.source.endpoint.overrideEndpoint\": \"true\",\r\n        \"camel.source.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n        \"camel.source.endpoint.accessKey\": \"FakeKey\",\r\n        \"camel.source.endpoint.secretKey\": \"FakeKey\",\r\n        \"camel.source.endpoint.region\": \"eu-west-1\",\r\n        \"camel.source.endpoint.trustAllCertificates\": \"true\",\r\n        \"camel.source.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n    }\r\n}",
+									"raw": "{ \r\n    \"name\": \"kinesis-source-connector\",\r\n    \"config\": {\r\n        \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSourceConnector\",\r\n        \"tasks.max\": \"3\",\r\n        \"topics\": \"nomu.backoffice.event\",\r\n        \"camel.error.handler\": \"default\",\r\n        \"camel.error.handler.max.redeliveries\": \"10\",\r\n        \"camel.source.path.streamName\": \"simple-source-connect-stream\",\r\n        \"camel.source.endpoint.overrideEndpoint\": \"true\",\r\n        \"camel.source.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n        \"camel.source.endpoint.accessKey\": \"FakeKey\",\r\n        \"camel.source.endpoint.secretKey\": \"FakeKey\",\r\n        \"camel.source.endpoint.region\": \"eu-west-1\",\r\n        \"camel.source.endpoint.trustAllCertificates\": \"true\",\r\n        \"camel.source.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -617,7 +617,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSourceConnector\",\r\n    \"tasks.max\": \"1\",\r\n    \"topics\": \"simple-connect\",\r\n    \"camel.error.handler\": \"default\",\r\n    \"camel.error.handler.max.redeliveries\": \"10\",\r\n    \"camel.source.path.streamName\": \"simple-source-connect-stream\",\r\n    \"camel.source.endpoint.overrideEndpoint\": \"true\",\r\n    \"camel.source.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n    \"camel.source.endpoint.accessKey\": \"FakeKey\",\r\n    \"camel.source.endpoint.secretKey\": \"FakeKey\",\r\n    \"camel.source.endpoint.region\": \"eu-west-1\",\r\n    \"camel.source.endpoint.trustAllCertificates\": \"true\",\r\n    \"camel.source.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n}",
+									"raw": "{\r\n    \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSourceConnector\",\r\n    \"tasks.max\": \"3\",\r\n    \"topics\": \"nomu.backoffice.event\",\r\n    \"camel.error.handler\": \"default\",\r\n    \"camel.error.handler.max.redeliveries\": \"10\",\r\n    \"camel.source.path.streamName\": \"simple-source-connect-stream\",\r\n    \"camel.source.endpoint.overrideEndpoint\": \"true\",\r\n    \"camel.source.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n    \"camel.source.endpoint.accessKey\": \"FakeKey\",\r\n    \"camel.source.endpoint.secretKey\": \"FakeKey\",\r\n    \"camel.source.endpoint.region\": \"eu-west-1\",\r\n    \"camel.source.endpoint.trustAllCertificates\": \"true\",\r\n    \"camel.source.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -646,7 +646,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8082/connectors/kinesis-source-connector/config",
+									"raw": "http://localhost:8082/connectors/kinesis-source-connector",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -654,8 +654,7 @@
 									"port": "8082",
 									"path": [
 										"connectors",
-										"kinesis-source-connector",
-										"config"
+										"kinesis-source-connector"
 									]
 								}
 							},
