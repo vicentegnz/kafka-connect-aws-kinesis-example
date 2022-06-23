@@ -11,11 +11,11 @@ client = session.client(
     endpoint_url='http://kinesis:4566'
 )
 
-stream_details = client.describe_stream(StreamName='simple-connect-stream')
+stream_details = client.describe_stream(StreamName='simple-sink-connect-stream')
 shard_id = stream_details['StreamDescription']['Shards'][0]['ShardId']
 
 response = client.get_shard_iterator(
-    StreamName='simple-connect-stream',
+    StreamName='simple-sink-connect-stream',
     ShardId=shard_id,
     ShardIteratorType='LATEST'
 )

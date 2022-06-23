@@ -1,23 +1,7 @@
-FROM wurstmeister/kafka:2.13-2.8.1
+FROM bitnami/kafka:3.1.0-debian-10-r89
 
-# we replace the default connect-standalone.properties so we can properly resolve to our local kafka docker development
+USER root
+COPY distributed-sink-connector/connect-distributed.properties /opt/bitnami/kafka/config/
+COPY _base/camel-aws2-kinesis-kafka-connector /opt/bitnami/kafka/plugins/camel-aws2-kinesis-kafka-connector
+ENV CLASSPATH=/opt/bitnami/kafka/plugins/*.jar:${CLASSPATH}
 
-COPY connect-distributed.properties /opt/kafka/config/
-
-# kinesis connector binaries
-COPY amazon-kinesis-kafka-connector-0.0.9-DEMO-CUSTOM.jar /libs/
-ENV CLASSPATH=/libs/amazon-kinesis-kafka-connector-0.0.9-DEMO-CUSTOM.jar:${CLASSPATH}
-
-ARG ACCESS_KEY_ID
-ARG SECRET_ACCESS_KEY
-ARG SESSION_TOKEN
-
-ENV AWS_ACCESS_KEY_ID=${ACCESS_KEY_ID}
-ENV AWS_SECRET_ACCESS_KEY=${SECRET_ACCESS_KEY}
-ENV AWS_SESSION_TOKEN=${SESSION_TOKEN}
-
-# we replace the start command creating a connector instead.
-COPY start-kafka.sh /usr/bin/
-
-# permissions
-RUN chmod a+x /usr/bin/start-kafka.sh

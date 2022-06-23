@@ -3,9 +3,9 @@ version: '3.3'
 services:
   zookeeper:
     container_name: zookeeper
-    image: wurstmeister/zookeeper:latest
+    image: docker.io/bitnami/zookeeper:3.8
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
+      - ALLOW_ANONYMOUS_LOGIN=yes
     ports:
       - '2181:2181'
     networks:
@@ -13,38 +13,42 @@ services:
 
   kafka:
     container_name: kafka
-    image: wurstmeister/kafka:2.13-2.8.1
-    environment:
-      ## the >- used below infers a value which is a string and properly
-      ## ignore the multiple lines resulting in one long string:
-      ## https://yaml.org/spec/1.2/spec.html  
-
-      ## You need to make sure to specify your hostname in a file in this
-      ## same dir as this compose file called `.env`(uncomment the line)
-      ## or to register in your `/etc/hosts` kafka as your loopback interface
-      ## address together with hostname and 127.0.0.1
-      KAFKA_ADVERTISED_LISTENERS: >-
-        LISTENER_DOCKER_INTERNAL://kafka:19092, LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-kafka}:9092
-
-      KAFKA_LISTENERS: >-
-        LISTENER_DOCKER_INTERNAL://:19092, LISTENER_DOCKER_EXTERNAL://:9092
-
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: >-
-        LISTENER_DOCKER_INTERNAL:PLAINTEXT, LISTENER_DOCKER_EXTERNAL:PLAINTEXT
-
-      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      # we create topic with 1 partition and 1 replica as it's for local dev and we're running a single broker instance.
-      KAFKA_CREATE_TOPICS: 'simple-connect:3:1'
-      KAFKA_LOG4J_LOGGERS: >-
-        kafka.controller=INFO, kafka.producer.async.DefaultEventHandler=INFO, state.change.logger=INFO
+    image: 'docker.io/bitnami/kafka:3.2'
     ports:
-      - 9092:9092
+      - "5221:9092"
+      - "5222:9093"
+      - "5224:9094"
+    environment:
+      - BITNAMI_DEBUG=true
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - custom-network
+
+  kafka-init:
+    image: 'docker.io/bitnami/kafka:3.2'
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics.sh --bootstrap-server $$SERVER --list
+      echo 'Creating kafka topics'
+      kafka-topics.sh --bootstrap-server $$SERVER --create --if-not-exists --topic gateway.event.payment --replication-factor 1 --partitions 3
+      kafka-topics.sh --bootstrap-server $$SERVER --create --if-not-exists --topic external.fake.company.event.payment --replication-factor 1 --partitions 3
+      echo 'Successfully created the following topics:'
+      kafka-topics.sh --bootstrap-server $$SERVER --list
+      "
+    environment:
+      SERVER: 'kafka:9092'
     networks:
       - custom-network
 
@@ -59,7 +63,7 @@ services:
     environment:
       KAFKA_REST_HOST_NAME: kafka-rest-proxy
       KAFKA_REST_LISTENERS: http://0.0.0.0:8086
-      KAFKA_REST_BOOTSTRAP_SERVERS: kafka:19092
+      KAFKA_REST_BOOTSTRAP_SERVERS: kafka:9092
     networks:
       - custom-network
 
@@ -86,7 +90,7 @@ services:
       AWS_DEFAULT_REGION: eu-west-1
       AWS_ACCESS_KEY_ID: FakeKey
       AWS_SECRET_ACCESS_KEY: FakeKey
-      KINESIS_INITIALIZE_STREAMS: simple-connect-stream:1
+      KINESIS_INITIALIZE_STREAMS: simple-sink-connect-stream:1,simple-source-connect-stream:1
     ports:
       - '4566-4583:4566-4583'
     depends_on:
@@ -94,20 +98,39 @@ services:
     networks:
       - custom-network
 
-  connect-output:
+  source-kinesis-connector:
+    container_name: source-kinesis-connector
     build:
-      context: ./distributed-sink-connector
-      dockerfile: Dockerfile
-      args:
-        ACCESS_KEY_ID: FakeKey
-        SECRET_ACCESS_KEY: FakeKey
-        SESSION_TOKEN: FakeKey
-    deploy:
-      replicas: 3
+      context: .
+      dockerfile: distributed-source-connector/Dockerfile
     ports:
-      - "8083"
+      - "8082:8083"
     depends_on:
       - kafka
+    command: /opt/bitnami/kafka/bin/connect-distributed.sh opt/bitnami/kafka/config/connect-distributed.properties
+    networks:
+      - custom-network
+
+  sink-kinesis-connector:
+    container_name: sink-kinesis-connector
+    build:
+      context: .
+      dockerfile: distributed-sink-connector/Dockerfile
+    ports:
+      - "8084:8083"
+    depends_on:
+      - kafka
+    command: /opt/bitnami/kafka/bin/connect-distributed.sh opt/bitnami/kafka/config/connect-distributed.properties
+    networks:
+      - custom-network
+
+  kinesis-producer:
+    build:
+      context: ./kinesis-producer
+      dockerfile: Dockerfile
+    container_name: kinesis-producer
+    depends_on:
+      - kinesis
     networks:
       - custom-network
 
