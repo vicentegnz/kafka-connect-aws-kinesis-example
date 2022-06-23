@@ -50,7 +50,7 @@
 			]
 		},
 		{
-			"name": "Gateway",
+			"name": "Produce Gateway events",
 			"item": [
 				{
 					"name": "Payment pending",
@@ -504,7 +504,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{ \r\n    \"name\": \"kinesis-sink-connector\",\r\n    \"config\": {\r\n        \"connector.class\": \"com.amazon.kinesis.kafka.AmazonKinesisSinkConnector\",\r\n        \"tasks.max\": \"3\",\r\n        \"topics\": \"simple-connect\",\r\n        \"region\": \"eu-west-1\",\r\n        \"streamName\": \"simple-connect-stream\",\r\n        \"usePartitionAsHashKey\": \"false\",\r\n        \"flushSync\": \"true\",\r\n        \"singleKinesisProducerPerPartition\": \"true\",\r\n        \"pauseConsumption\": \"true\",\r\n        \"outstandingRecordsThreshold\": \"500000\",\r\n        \"sleepPeriod\": \"1000\",\r\n        \"sleepCycles\": \"10\",\r\n        \"maxBufferedTime\": \"1500\",\r\n        \"maxConnections\": \"3\",\r\n        \"rateLimit\": \"100\",\r\n        \"ttl\": \"60000\",\r\n        \"aggregation\": \"true\",\r\n        \"kinesisEndpoint\": \"bbf0-77-228-164-92.ngrok.io\",\r\n        \"awsValidateCertificate\": \"false\",\r\n        \"key.converter\": \"org.apache.kafka.connect.storage.StringConverter\",\r\n        \"key.converter.schemas.enable\": \"false\",\r\n        \"value.converter\": \"org.apache.kafka.connect.storage.StringConverter\",\r\n        \"value.converter.schemas.enable\": \"false\"\r\n    }\r\n}",
+									"raw": "{ \r\n    \"name\": \"kinesis-sink-connector\",\r\n    \"config\": {\r\n        \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSinkConnector\",\r\n        \"tasks.max\": \"1\",\r\n        \"topics\": \"simple-connect\",\r\n        \"camel.sink.endpoint.region\": \"eu-west-1\",\r\n        \"camel.sink.path.streamName\": \"simple-sink-connect-stream\",\r\n        \"camel.sink.endpoint.amazonKinesisClient\": \"localhost:4566\",\r\n        \"camel.sink.endpoint.accessKey\": \"FakeKey\",\r\n        \"camel.sink.endpoint.secretKey\": \"FakeKey\"\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -512,12 +512,12 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:53710/connectors/",
+									"raw": "http://localhost:60662/connectors/",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "53710",
+									"port": "60662",
 									"path": [
 										"connectors",
 										""
@@ -533,7 +533,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"kinesis-sink-connector\",\r\n    \"connector.class\": \"com.amazon.kinesis.kafka.AmazonKinesisSinkConnector\",\r\n    \"tasks.max\": \"3\",\r\n    \"topics\": \"simple-connect\",\r\n    \"region\": \"eu-west-1\",\r\n    \"streamName\": \"simple-connect-stream\",\r\n    \"usePartitionAsHashKey\": \"false\",\r\n    \"flushSync\": \"true\",\r\n    \"singleKinesisProducerPerPartition\": \"true\",\r\n    \"pauseConsumption\": \"true\",\r\n    \"outstandingRecordsThreshold\": \"500000\",\r\n    \"sleepPeriod\": \"1000\",\r\n    \"sleepCycles\": \"10\",\r\n    \"maxBufferedTime\": \"1500\",\r\n    \"maxConnections\": \"3\",\r\n    \"rateLimit\": \"100\",\r\n    \"ttl\": \"60000\",\r\n    \"aggregation\": \"true\",\r\n    \"kinesisEndpoint\": \"610f-77-228-164-92.ngrok.io\",\r\n    \"awsValidateCertificate\": \"false\",\r\n    \"key.converter\": \"org.apache.kafka.connect.storage.StringConverter\",\r\n    \"key.converter.schemas.enable\": \"false\",\r\n    \"value.converter\": \"org.apache.kafka.connect.storage.StringConverter\",\r\n    \"value.converter.schemas.enable\": \"false\"\r\n}",
+									"raw": "{\r\n        \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSinkConnector\",\r\n        \"tasks.max\": \"1\",\r\n        \"topics\": \"simple-connect\",\r\n        \"camel.sink.endpoint.region\": \"eu-west-1\",\r\n        \"camel.sink.path.streamName\": \"simple-sink-connect-stream\",\r\n        \"camel.sink.endpoint.amazonKinesisClient\": \"localhost:4566\",\r\n        \"camel.sink.endpoint.accessKey\": \"FakeKey\",\r\n        \"camel.sink.endpoint.secretKey\": \"FakeKey\",\r\n        \"camel.sink.endpoint.trustAllCertificates\": \"true\",\r\n        \"camel.sink.endpoint.useDefaultCredentialsProvider\": \"false\",\r\n        \"camel.error.handler\": \"default\",\r\n        \"camel.error.handler.max.redeliveries\": \"10\",\r\n        \"camel.sink.contentLogLevel\": \"TRACE\"\r\n    }",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -541,12 +541,12 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:53710/connectors/kinesis-sink-connector/config",
+									"raw": "http://localhost:54547/connectors/kinesis-sink-connector/config",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "53710",
+									"port": "54547",
 									"path": [
 										"connectors",
 										"kinesis-sink-connector",
@@ -564,15 +564,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:53713/connectors/kinesis-sink-connector",
+							"raw": "http://localhost:60139/connectors",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "53713",
+							"port": "60139",
 							"path": [
-								"connectors",
-								"kinesis-sink-connector"
+								"connectors"
 							]
 						}
 					},
