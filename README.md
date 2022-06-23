@@ -18,7 +18,7 @@ Example repository using docker compose to pull and push events from AWS Kinesis
    - Kinesis stream producer
 
 2. Run the docker containers, it will run Zookeeper, Kafka and the Connectors in
-   the background `docker-compose up``.
+   the background `docker-compose up`.
 
 3. Query the Connect REST API of the distributed connector to verify it is
   running using the Postman collection in the connectors section.
