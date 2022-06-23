@@ -42,8 +42,8 @@ services:
       # blocks until kafka is reachable
       kafka-topics.sh --bootstrap-server $$SERVER --list
       echo 'Creating kafka topics'
-      kafka-topics.sh --bootstrap-server $$SERVER --create --if-not-exists --topic  peza.gateway.v1beta1.event.payment --replication-factor 1 --partitions 3
-      kafka-topics.sh --bootstrap-server $$SERVER --create --if-not-exists --topic nomu.backoffice.event --replication-factor 1 --partitions 3
+      kafka-topics.sh --bootstrap-server $$SERVER --create --if-not-exists --topic gateway.event.payment --replication-factor 1 --partitions 3
+      kafka-topics.sh --bootstrap-server $$SERVER --create --if-not-exists --topic external.fake.company.event.payment --replication-factor 1 --partitions 3
       echo 'Successfully created the following topics:'
       kafka-topics.sh --bootstrap-server $$SERVER --list
       "

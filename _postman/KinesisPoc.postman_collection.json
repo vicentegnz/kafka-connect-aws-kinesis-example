@@ -92,7 +92,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{$aggregateId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"peza.gateway.v1beta1.event.payment.pending\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        },\r\n        {\r\n            \"name\": \"CamelHeader.CamelAwsKinesisPartitionKey\",\r\n            \"value\": \"partition-0\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"peza.gateway.v1beta1.event.payment.pending\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceIndex\": 0,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{$aggregateId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Webhooks_Local_Test_Merchant\",\r\n                \"status\": \"pending\",\r\n                \"reason\":{\r\n                    \"code\": \"waiting_confirmation\",\r\n                    \"description\": \"Payment confirmation is pending for this non instant payment.\"\r\n                    },\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"paymentMethod\": \"fpx\",\r\n                \"configuration\": {\r\n                    \"integrationId\": \"Razer\",\r\n                    \"integrationConfig\": {\r\n                        \"user\": \"razer\",\r\n                        \"password\": \"***\"\r\n                    },\r\n                    \"id\": \"{{$guid}}\"\r\n                },\r\n                \"captureOption\": \"auto\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"description\": \"{{$randomBsNoun}}\",\r\n                \"returnUrl\": \"{{$randomUrl}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{$aggregateId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"gateway.event.payment.pending\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        },\r\n        {\r\n            \"name\": \"CamelHeader.CamelAwsKinesisPartitionKey\",\r\n            \"value\": \"partition-0\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"gateway.event.payment.pending\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceIndex\": 0,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{$aggregateId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Test_Merchant\",\r\n                \"status\": \"pending\",\r\n                \"reason\":{\r\n                    \"code\": \"waiting_confirmation\",\r\n                    \"description\": \"Payment confirmation is pending for this non instant payment.\"\r\n                    },\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"paymentMethod\": \"fpx\",\r\n                \"captureOption\": \"auto\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"description\": \"{{$randomBsNoun}}\",\r\n                \"returnUrl\": \"{{$randomUrl}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -100,7 +100,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/peza.gateway.v1beta1.event.payment/records",
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/gateway.event.payment/records",
 							"host": [
 								"{{KafkaRestProxyHost}}"
 							],
@@ -109,7 +109,7 @@
 								"clusters",
 								"{{clusterId}}",
 								"topics",
-								"peza.gateway.v1beta1.event.payment",
+								"gateway.event.payment",
 								"records"
 							]
 						}
@@ -152,7 +152,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"peza.gateway.v1beta1.event.payment.finished\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        },\r\n        {\r\n            \"name\": \"CamelHeader.CamelAwsKinesisPartitionKey\",\r\n            \"value\": \"partition-0\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"peza.gateway.v1beta1.event.payment.finished\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceIndex\": 1,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Webhooks_Local_Test_Merchant\",\r\n                \"status\": \"succeeded\",\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"paymentMethod\": \"fpx\",\r\n                \"configuration\": {\r\n                    \"integrationId\": \"Razer\",\r\n                    \"integrationConfig\": {\r\n                        \"user\": \"razer\",\r\n                        \"password\": \"***\"\r\n                    },\r\n                    \"id\": \"{{$guid}}\"\r\n                },\r\n                \"captureOption\": \"auto\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"description\": \"{{$randomBsNoun}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"gateway.event.payment.finished\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        },\r\n        {\r\n            \"name\": \"CamelHeader.CamelAwsKinesisPartitionKey\",\r\n            \"value\": \"partition-0\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"gateway.event.payment.finished\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceIndex\": 1,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Test_Merchant\",\r\n                \"status\": \"succeeded\",\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"paymentMethod\": \"fpx\",\r\n                \"captureOption\": \"auto\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"description\": \"{{$randomBsNoun}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -160,7 +160,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/peza.gateway.v1beta1.event.payment/records",
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/gateway.event.payment/records",
 							"host": [
 								"{{KafkaRestProxyHost}}"
 							],
@@ -169,7 +169,7 @@
 								"clusters",
 								"{{clusterId}}",
 								"topics",
-								"peza.gateway.v1beta1.event.payment",
+								"gateway.event.payment",
 								"records"
 							]
 						}
@@ -212,7 +212,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"peza.gateway.v1beta1.event.payment.cancel_finished\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        },\r\n        {\r\n            \"name\": \"CamelHeader.CamelAwsKinesisPartitionKey\",\r\n            \"value\": \"partition-0\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"peza.gateway.v1beta1.event.payment.cancel_finished\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceNumber\": 2,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{$entityId}}\",\r\n                \"paymentId\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Webhooks_Local_Test_Merchant\",\r\n                \"status\": \"succeeded\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"gateway.event.payment.cancel_finished\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        },\r\n        {\r\n            \"name\": \"CamelHeader.CamelAwsKinesisPartitionKey\",\r\n            \"value\": \"partition-0\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"gateway.event.payment.cancel_finished\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceNumber\": 2,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{$entityId}}\",\r\n                \"paymentId\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Test_Merchant\",\r\n                \"status\": \"succeeded\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -220,7 +220,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/peza.gateway.v1beta1.event.payment/records",
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/gateway.event.payment/records",
 							"host": [
 								"{{KafkaRestProxyHost}}"
 							],
@@ -229,7 +229,7 @@
 								"clusters",
 								"{{clusterId}}",
 								"topics",
-								"peza.gateway.v1beta1.event.payment",
+								"gateway.event.payment",
 								"records"
 							]
 						}
@@ -272,7 +272,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"peza.gateway.v1beta1.event.payment.capture_finished\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        },\r\n        {\r\n            \"name\": \"CamelHeader.CamelAwsKinesisPartitionKey\",\r\n            \"value\": \"partition-0\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"peza.gateway.v1beta1.event.payment.capture_finished\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceNumber\": 2,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{$entityId}}\",\r\n                \"paymentId\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Webhooks_Local_Test_Merchant\",\r\n                \"status\": \"succeded\",\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"gateway.event.payment.capture_finished\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        },\r\n        {\r\n            \"name\": \"CamelHeader.CamelAwsKinesisPartitionKey\",\r\n            \"value\": \"partition-0\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"gateway.event.payment.capture_finished\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceNumber\": 2,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{$entityId}}\",\r\n                \"paymentId\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Test_Merchant\",\r\n                \"status\": \"succeded\",\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -280,7 +280,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/peza.gateway.v1beta1.event.payment/records",
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/gateway.event.payment/records",
 							"host": [
 								"{{KafkaRestProxyHost}}"
 							],
@@ -289,7 +289,7 @@
 								"clusters",
 								"{{clusterId}}",
 								"topics",
-								"peza.gateway.v1beta1.event.payment",
+								"gateway.event.payment",
 								"records"
 							]
 						}
@@ -336,7 +336,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"peza.gateway.v1beta1.event.payment.refund_pending\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        },\r\n        {\r\n            \"name\": \"CamelHeader.CamelAwsKinesisPartitionKey\",\r\n            \"value\": \"partition-0\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"peza.gateway.v1beta1.event.payment.refund_pending\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceNumber\": 2,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{$entityId}}\",\r\n                \"paymentId\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Webhooks_Local_Test_Merchant\",\r\n                \"status\": \"pending\",\r\n                \"reason\":{\r\n                    \"code\": \"waiting_confirmation\",\r\n                    \"description\": \"Payment confirmation is pending for this non instant payment.\"\r\n                },\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"gateway.event.payment\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        },\r\n        {\r\n            \"name\": \"CamelHeader.CamelAwsKinesisPartitionKey\",\r\n            \"value\": \"partition-0\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"gateway.event.payment.refund_pending\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceNumber\": 2,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{$entityId}}\",\r\n                \"paymentId\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Test_Merchant\",\r\n                \"status\": \"pending\",\r\n                \"reason\":{\r\n                    \"code\": \"waiting_confirmation\",\r\n                    \"description\": \"Payment confirmation is pending for this non instant payment.\"\r\n                },\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -344,7 +344,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/peza.gateway.v1beta1.event.payment/records",
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/gateway.event.payment/records",
 							"host": [
 								"{{KafkaRestProxyHost}}"
 							],
@@ -353,7 +353,7 @@
 								"clusters",
 								"{{clusterId}}",
 								"topics",
-								"peza.gateway.v1beta1.event.payment",
+								"gateway.event.payment",
 								"records"
 							]
 						}
@@ -396,7 +396,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"peza.gateway.v1beta1.event.payment.refund_finished\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        },\r\n        {\r\n            \"name\": \"CamelHeader.CamelAwsKinesisPartitionKey\",\r\n            \"value\": \"partition-0\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"peza.gateway.v1beta1.event.payment.refund_finished\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceNumber\": 3,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{refundId}}\",\r\n                \"paymentId\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Webhooks_Local_Test_Merchant\",\r\n                \"status\": \"succeeded\",\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+							"raw": "{\r\n    \"key\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": \"{{paymentId}}\"\r\n    },\r\n    \"headers\": [\r\n        {\r\n            \"name\": \"X-Message-ID\",\r\n            \"value\": \"{{$eventId}}\"\r\n        },\r\n        {\r\n            \"name\": \"X-Message-Type\",\r\n            \"value\": \"gateway.event.payment.refund_finished\"\r\n        },\r\n        {\r\n            \"name\": \"traceparent\",\r\n            \"value\": \"{{$traceparent}}\"\r\n        },\r\n        {\r\n            \"name\": \"CamelHeader.CamelAwsKinesisPartitionKey\",\r\n            \"value\": \"partition-0\"\r\n        }\r\n    ],\r\n    \"value\": {\r\n        \"type\": \"JSON\",\r\n        \"data\": {\r\n            \"id\": \"{{$eventId}}\",\r\n            \"type\": \"gateway.event.payment.refund_finished\",\r\n            \"sequenceGroupId\": \"{{$aggregateId}}\",\r\n            \"sequenceNumber\": 3,\r\n            \"createTime\": \"{{$isoTimestamp}}\",\r\n            \"payload\": {\r\n                \"id\": \"{{refundId}}\",\r\n                \"paymentId\": \"{{paymentId}}\",\r\n                \"merchantReference\": \"{{$guid}}\",\r\n                \"merchantAccount\": \"Test_Merchant\",\r\n                \"status\": \"succeeded\",\r\n                \"amount\": 21.23,\r\n                \"currency\": \"myr\",\r\n                \"providerId\": \"{{$guid}}\",\r\n                \"createTime\": \"{{$isoTimestamp}}\"\r\n            }\r\n        }\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -404,7 +404,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/peza.gateway.v1beta1.event.payment/records",
+							"raw": "{{KafkaRestProxyHost}}/v3/clusters/{{clusterId}}/topics/gateway.event.payment/records",
 							"host": [
 								"{{KafkaRestProxyHost}}"
 							],
@@ -413,7 +413,7 @@
 								"clusters",
 								"{{clusterId}}",
 								"topics",
-								"peza.gateway.v1beta1.event.payment",
+								"gateway.event.payment",
 								"records"
 							]
 						}
@@ -504,7 +504,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{ \r\n    \"name\": \"kinesis-sink-connector\",\r\n    \"config\": {\r\n        \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSinkConnector\",\r\n        \"tasks.max\": \"3\",\r\n        \"topics\": \"peza.gateway.v1beta1.event.payment\",\r\n        \"camel.error.handler\": \"default\",\r\n        \"camel.error.handler.max.redeliveries\": \"10\",\r\n        \"camel.sink.path.streamName\": \"simple-sink-connect-stream\",\r\n        \"camel.sink.endpoint.overrideEndpoint\": \"true\",\r\n        \"camel.sink.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n        \"camel.sink.endpoint.accessKey\": \"FakeKey\",\r\n        \"camel.sink.endpoint.secretKey\": \"FakeKey\",\r\n        \"camel.sink.endpoint.region\": \"eu-west-1\",\r\n        \"camel.sink.endpoint.trustAllCertificates\": \"true\",\r\n        \"camel.sink.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n    }\r\n}",
+									"raw": "{ \r\n    \"name\": \"kinesis-sink-connector\",\r\n    \"config\": {\r\n        \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSinkConnector\",\r\n        \"tasks.max\": \"3\",\r\n        \"topics\": \"gateway.event.payment\",\r\n        \"camel.error.handler\": \"default\",\r\n        \"camel.error.handler.max.redeliveries\": \"10\",\r\n        \"camel.sink.path.streamName\": \"simple-sink-connect-stream\",\r\n        \"camel.sink.endpoint.overrideEndpoint\": \"true\",\r\n        \"camel.sink.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n        \"camel.sink.endpoint.accessKey\": \"FakeKey\",\r\n        \"camel.sink.endpoint.secretKey\": \"FakeKey\",\r\n        \"camel.sink.endpoint.region\": \"eu-west-1\",\r\n        \"camel.sink.endpoint.trustAllCertificates\": \"true\",\r\n        \"camel.sink.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -533,7 +533,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSinkConnector\",\r\n    \"tasks.max\": \"3\",\r\n    \"topics\": \"peza.gateway.v1beta1.event.payment\",\r\n    \"camel.error.handler\": \"default\",\r\n    \"camel.error.handler.max.redeliveries\": \"10\",\r\n    \"camel.sink.path.streamName\": \"simple-sink-connect-stream\",\r\n    \"camel.sink.endpoint.overrideEndpoint\": \"true\",\r\n    \"camel.sink.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n    \"camel.sink.endpoint.accessKey\": \"FakeKey\",\r\n    \"camel.sink.endpoint.secretKey\": \"FakeKey\",\r\n    \"camel.sink.endpoint.region\": \"eu-west-1\",\r\n    \"camel.sink.endpoint.trustAllCertificates\": \"true\",\r\n    \"camel.sink.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n}",
+									"raw": "{\r\n    \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSinkConnector\",\r\n    \"tasks.max\": \"3\",\r\n    \"topics\": \"gateway.event.payment\",\r\n    \"camel.error.handler\": \"default\",\r\n    \"camel.error.handler.max.redeliveries\": \"10\",\r\n    \"camel.sink.path.streamName\": \"simple-sink-connect-stream\",\r\n    \"camel.sink.endpoint.overrideEndpoint\": \"true\",\r\n    \"camel.sink.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n    \"camel.sink.endpoint.accessKey\": \"FakeKey\",\r\n    \"camel.sink.endpoint.secretKey\": \"FakeKey\",\r\n    \"camel.sink.endpoint.region\": \"eu-west-1\",\r\n    \"camel.sink.endpoint.trustAllCertificates\": \"true\",\r\n    \"camel.sink.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -588,7 +588,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{ \r\n    \"name\": \"kinesis-source-connector\",\r\n    \"config\": {\r\n        \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSourceConnector\",\r\n        \"tasks.max\": \"3\",\r\n        \"topics\": \"nomu.backoffice.event\",\r\n        \"camel.error.handler\": \"default\",\r\n        \"camel.error.handler.max.redeliveries\": \"10\",\r\n        \"camel.source.path.streamName\": \"simple-source-connect-stream\",\r\n        \"camel.source.endpoint.overrideEndpoint\": \"true\",\r\n        \"camel.source.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n        \"camel.source.endpoint.accessKey\": \"FakeKey\",\r\n        \"camel.source.endpoint.secretKey\": \"FakeKey\",\r\n        \"camel.source.endpoint.region\": \"eu-west-1\",\r\n        \"camel.source.endpoint.trustAllCertificates\": \"true\",\r\n        \"camel.source.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n    }\r\n}",
+									"raw": "{ \r\n    \"name\": \"kinesis-source-connector\",\r\n    \"config\": {\r\n        \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSourceConnector\",\r\n        \"tasks.max\": \"3\",\r\n        \"topics\": \"external.fake.company.event.payment\",\r\n        \"camel.error.handler\": \"default\",\r\n        \"camel.error.handler.max.redeliveries\": \"10\",\r\n        \"camel.source.path.streamName\": \"simple-source-connect-stream\",\r\n        \"camel.source.endpoint.overrideEndpoint\": \"true\",\r\n        \"camel.source.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n        \"camel.source.endpoint.accessKey\": \"FakeKey\",\r\n        \"camel.source.endpoint.secretKey\": \"FakeKey\",\r\n        \"camel.source.endpoint.region\": \"eu-west-1\",\r\n        \"camel.source.endpoint.trustAllCertificates\": \"true\",\r\n        \"camel.source.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -617,7 +617,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSourceConnector\",\r\n    \"tasks.max\": \"3\",\r\n    \"topics\": \"nomu.backoffice.event\",\r\n    \"camel.error.handler\": \"default\",\r\n    \"camel.error.handler.max.redeliveries\": \"10\",\r\n    \"camel.source.path.streamName\": \"simple-source-connect-stream\",\r\n    \"camel.source.endpoint.overrideEndpoint\": \"true\",\r\n    \"camel.source.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n    \"camel.source.endpoint.accessKey\": \"FakeKey\",\r\n    \"camel.source.endpoint.secretKey\": \"FakeKey\",\r\n    \"camel.source.endpoint.region\": \"eu-west-1\",\r\n    \"camel.source.endpoint.trustAllCertificates\": \"true\",\r\n    \"camel.source.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n}",
+									"raw": "{\r\n    \"connector.class\": \"org.apache.camel.kafkaconnector.aws2kinesis.CamelAws2kinesisSourceConnector\",\r\n    \"tasks.max\": \"3\",\r\n    \"topics\": \"external.fake.company.event.payment\",\r\n    \"camel.error.handler\": \"default\",\r\n    \"camel.error.handler.max.redeliveries\": \"10\",\r\n    \"camel.source.path.streamName\": \"simple-source-connect-stream\",\r\n    \"camel.source.endpoint.overrideEndpoint\": \"true\",\r\n    \"camel.source.endpoint.uriEndpointOverride\": \"http://kinesis:4566/\",\r\n    \"camel.source.endpoint.accessKey\": \"FakeKey\",\r\n    \"camel.source.endpoint.secretKey\": \"FakeKey\",\r\n    \"camel.source.endpoint.region\": \"eu-west-1\",\r\n    \"camel.source.endpoint.trustAllCertificates\": \"true\",\r\n    \"camel.source.endpoint.useDefaultCredentialsProvider\": \"false\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
