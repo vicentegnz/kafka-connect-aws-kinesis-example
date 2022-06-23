@@ -98,18 +98,18 @@ services:
     networks:
       - custom-network
 
-  source-kinesis-connector:
-    container_name: source-kinesis-connector
-    build:
-      context: .
-      dockerfile: distributed-source-connector/Dockerfile
-    ports:
-      - "8083"
-    depends_on:
-      - kafka
-    command: /opt/bitnami/kafka/bin/connect-distributed.sh opt/bitnami/kafka/config/connect-distributed.properties
-    networks:
-      - custom-network
+  # source-kinesis-connector:
+  #   container_name: source-kinesis-connector
+  #   build:
+  #     context: .
+  #     dockerfile: distributed-source-connector/Dockerfile
+  #   ports:
+  #     - "8082:8083"
+  #   depends_on:
+  #     - kafka
+  #   command: /opt/bitnami/kafka/bin/connect-distributed.sh opt/bitnami/kafka/config/connect-distributed.properties
+  #   networks:
+  #     - custom-network
 
   sink-kinesis-connector:
     container_name: sink-kinesis-connector
@@ -117,7 +117,7 @@ services:
       context: .
       dockerfile: distributed-sink-connector/Dockerfile
     ports:
-      - "8083"
+      - "8084:8083"
     depends_on:
       - kafka
     command: /opt/bitnami/kafka/bin/connect-distributed.sh opt/bitnami/kafka/config/connect-distributed.properties
