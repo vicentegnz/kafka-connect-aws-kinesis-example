@@ -13,12 +13,14 @@ client = session.client(
 
 stream_details = client.describe_stream(StreamName='simple-sink-connect-stream')
 shard_id = stream_details['StreamDescription']['Shards'][0]['ShardId']
+print(shard_id)
 
 response = client.get_shard_iterator(
     StreamName='simple-sink-connect-stream',
     ShardId=shard_id,
     ShardIteratorType='LATEST'
 )
+
 
 shard_iterator = response['ShardIterator']
 
