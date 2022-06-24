@@ -60,9 +60,9 @@ Example repository using docker compose to pull and push events from AWS Kinesis
 }
 ```
 
-If all goes well, in http://localhost:5223/ you should see two topics `external.fake.company.event` and `gateway.event.payment`.
+If all goes well, in http://localhost:5223/ you should see two topics `external.fake.company.event.payment` and `gateway.event.payment`.
 
-- `external.fake.company.event`: is used to receive the events from Kinesis that
+- `external.fake.company.event.payment`: is used to receive the events from Kinesis that
   the kinesis producer service is sending each 10 seconds.
 - `gateway.event.payment`: is used to receive the events that you send via Postman
   collection on the produce events section, all of those events should be listed
