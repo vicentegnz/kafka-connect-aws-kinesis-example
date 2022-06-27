@@ -67,3 +67,14 @@ If all goes well, in http://localhost:5223/ you should see two topics `external.
 - `gateway.event.payment`: is used to receive the events that you send via Postman
   collection on the produce events section, all of those events should be listed
   on kinesis consumer.
+
+## References
+
+- [How to use Kafka Connect](https://docs.confluent.io/platform/current/connect/userguide.html)
+- [Kafka Connect deep dive (Serialization)](https://www.confluent.io/es-es/blog/kafka-connect-deep-dive-converters-serialization-explained/)
+- [Apache Kafka Connect docs](https://kafka.apache.org/documentation/#connect)
+- [Camel Kafka connectors](https://camel.apache.org/camel-kafka-connector/0.11.x/reference/index.html)
+- [Camel Apache sink Kinesis connector configuration](https://camel.apache.org/camel-kafka-connector/0.11.x/reference/index.html)
+- [Camel Apache source Kinesis connector configuration](https://camel.apache.org/camel-kafka-connector/0.11.x/reference/connectors/camel-aws2-kinesis-kafka-source-connector.html)
+- [Camel Apache common connector configuration](https://camel.apache.org/camel-kafka-connector/0.11.x/user-guide/basic-configuration.html)
+  

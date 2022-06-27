@@ -32,5 +32,6 @@ while True:
     for record in response['Records']:
         if 'Data' in record and len(record['Data']) > 0:
             print('\nEvent received from KAFKA:')
+            print(record['PartitionKey'])
             print(json.loads(record['Data']))
     time.sleep(0.75)
